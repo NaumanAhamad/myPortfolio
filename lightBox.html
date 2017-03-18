@@ -1,0 +1,160 @@
+<!--
+Author: Numaan
+Author URL: http://www.numaanworld.tk
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+           <title>lightbox</title>
+        <style>
+            body{
+                background: rgba(156, 187, 217, 0.7);
+                width: 90%;
+                margin: 0 auto;
+                text-align: center;
+            }
+            h1{
+                font-family: monospace;
+                color: rgb(0, 40, 49);
+                font-size: 3em;
+            }
+            .lightbox_container {
+                padding: 10% 0;
+                background: white;
+            }
+            .lightbox ul{
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+            }
+            .lightbox ul li {
+                max-width: 19%;
+                margin: 0px 6px !important;
+                float: left;
+                padding: 0;
+            }
+            .lightbox ul li img{
+                width: 100%;
+                cursor: pointer;
+            }
+            .lightbox {
+                clear: both;
+                content: "";
+                display: table;
+            }
+        </style>
+    </head>
+    <body>
+      <h1>Light Box</h1>
+      <!--light_box main div starts here-->
+       <div class="lightbox_container">
+           <div class="lightbox clearfix">
+               <ul>
+                   <li><img src="images/image01.jpg" alt="computer"/></li>
+                   <li><img src="images/image02.jpg" alt="audi"/></li>
+                   <li><img src="images/image03.jpg" alt="camera"/></li>
+                   <li><img src="images/image04.jpg" alt="apple"/></li>
+                   <li><img src="images/image05.jpg" alt="ipad"/></li>
+               </ul>
+           </div>
+       </div>
+       <!--light_box main div ends here-->
+        
+    <script>
+        (function(){
+            'use strict'  
+
+            var myNode = document.querySelector(".lightbox ul"); //selecting the image grid
+
+            myNode.addEventListener("click", function(e){
+            if(e.target.tagName === 'IMG'){
+
+            //creating a overlay
+            var myOverlay = document.createElement('div');
+
+            //addding an id to the overlay
+            myOverlay.id = "overlay";
+
+            //apending it to the body
+            document.body.appendChild(myOverlay);
+
+            //styling the overlay
+            myOverlay.style.display = 'block';
+            myOverlay.style.backgroundColor = 'rgba(0,0,0,0.8)';
+            myOverlay.style.position = 'absolute';
+
+            //resizing the overlay
+            myOverlay.style.top = window.pageYOffset + 'px';
+            myOverlay.style.left = window.pageXOffset + 'px';
+            myOverlay.style.minWidth = window.innerWidth + 'px';
+            myOverlay.style.minHeight = window.innerHeight + 'px';
+            myOverlay.style.cursor = 'pointer';
+
+            //targeting the image src
+            var imageSrc = e.target.src;
+            var largeImage = document.createElement('img');
+            largeImage.id = largeImage;
+            largeImage.setAttribute("src", imageSrc);
+            largeImage.style.display = 'block';
+            largeImage.style.position = 'absolute';
+
+            largeImage.addEventListener("load", function(){
+                //Resizing the height & width of the image
+                if(this.height > window.innerHeight){
+                    this.ratio = window.innerHeight/this.minHeight;
+                    myOverlay.style.minWidth =  myOverlay.style.minWidth * this.ratio;
+                    myOverlay.style.minHeight = myOverlay.style.minHeight * this.ratio;
+                }//height
+                if(this.width > window.innerHeight){
+                    this.ratio = window.innerWidth/this.minWidth;
+                    myOverlay.style.minWidth   = myOverlay.style.minWidth * this.ratio;
+                    myOverlay.style.minHeight  = myOverlay.style.minHeight * this.ratio;
+                }//width
+
+                largeImage.addEventListener("click", function(){
+                    myOverlay.parentNode.removeChild(myOverlay);
+                }, false);//removing myOverlay on click
+
+                largeImage.addEventListener("scroll", function(){
+                    myOverlay.style.top = window.pageYOffset + 'px';
+                    myOverlay.style.left = window.pageXOffset + 'px';
+                }, false);//scroll functionality
+
+                largeImage.addEventListener("resize", function(){
+
+                    myOverlay.style.width = window.innerWidth + 'px';
+                    myOverlay.style.height = window.innerHeight + 'px';
+
+                    myOverlay.style.top = window.pageYOffset + 'px';
+                    myOverlay.style.left = window.pageXOffset + 'px';
+                }, false); // resize functionality
+
+                centerImage(largeImage);
+                myOverlay.appendChild(largeImage);
+
+
+
+            }, false); //largeimage load event listener
+
+
+
+            } //targetting the img tag
+
+            //centering the image function
+            function centerImage(toBeCenterImg){
+            var diffX = (window.innerHeight -  toBeCenterImg.height)/2;
+            var diffy = (window.innerWidth -  toBeCenterImg.width)/2;
+
+            toBeCenterImg.style.top = diffX + 'px';
+            toBeCenterImg.style.left = diffy + 'px';
+
+            return toBeCenterImg;
+            }//image has centered
+
+            }, false); //main event listener
+
+
+            })(); //self excuting main function    
+    </script>    
+    </body>
+</html>

@@ -1,0 +1,233 @@
+<!--
+Author: Numaan
+Author URL: http://www.numaanworld.tk
+-->
+<!doctype HTML>
+<html>
+  <head>
+    
+    <title>my song play list</title>
+    <style>
+        body{
+            width: 90%;
+            margin: 0 auto;
+        }
+        .main-content{
+          padding: 6em 0em;
+        }
+        p.title {
+            margin: 0;
+            padding: 16px 0px;
+            text-align: center;
+            background: #0876b5;
+            color: white;
+            font-family: cursive;
+            text-transform: uppercase;
+            font-size: 1.3em;
+        }
+        .main-content ul{
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        /* here "n=0" and assigns it list of childs*/
+        .main-content ul li:nth-child(n+1){
+            border-bottom: 1px solid rgba(99, 97, 97, 0.62)
+        }
+        .main-content ul li {
+            color: rgba(107, 101, 101, 0.84);
+            font-family: fantasy;
+            text-transform: capitalize;
+            line-height: 2.5em;
+            padding: 0px 15px;
+            font-size: 16px;
+            font-weight: 100;
+            clear: both;
+        }
+        span.duration {
+            float: right;
+        }
+        .main-content ul li.current{
+            background: rgba(8, 118, 181, 0.22);
+            color: #382828 !important;
+        }
+        .buttons {
+            text-align: center;
+            background: #0876b5;
+            padding: 5px 0px;
+        }
+        .buttons button {
+            background: white;
+            border: none;
+            border-radius: 2px;
+            padding: 10px 30px;
+            color: #797979;
+            font-size: 15px;
+            white-space: nowrap;
+            text-transform: uppercase;
+            font-family: monospace;
+            outline: none;
+        }
+        .buttons button:focus{
+            background: #00BCD4;
+            padding: 10px 30px;
+            color: white;
+            transition: 0.2s all;
+            transition-timing-function: ease-in-out;
+        }
+    </style>
+  </head>
+  <body>
+      <div class="main-content">
+        <p class="title">My Play List</p>
+        <ul id="myPlayList" class="myPlayList">
+<!--
+          <li>Ae dil hi mushkil - Arjit singh <span class="duration">4:30</span></li>
+          <li class="current">pata chalega - Imran khan <span class="duration">5:06</span></li>
+-->
+          
+        </ul>
+        <div class="buttons">
+          <button id="play" class="play">play</button>   
+          	<button id="stop" class="stop">stop</button>
+          <button id="next" class="next">next</button>
+        </div>
+        </div>
+        <script>
+            function PlayLists(){
+                this.songs = [];
+                this.songsIndex = 0;
+            }
+            PlayLists.prototype.add = function(song){
+                this.songs.push(song);
+            };
+
+            PlayLists.prototype.play = function(){
+                var currentSong = this.songs[this.songsIndex];
+                currentSong.play();
+            }; 
+            PlayLists.prototype.stop = function(){
+                var currentSong = this.songs[this.songsIndex];
+                currentSong.stop();
+            };
+            PlayLists.prototype.next = function(){
+                this.stop();
+                this.songsIndex++;
+                if(this.songsIndex === this.songs.length){
+                    this.songsIndex = 0;
+                }
+                this.play();
+            };
+            PlayLists.prototype.renderInElement = function(list){
+                var list;
+                list.innerHTML = '';
+                for(var i = 0;i<this.songs.length;i++){
+                    list.innerHTML+=this.songs[i].toHtml();
+                }
+
+            };
+        </script>
+       
+        <script>
+            function Media(title, duration){
+                  this.title = title;
+                  this.duration = duration;
+                  this.isPlaying = false;
+            }
+            Media.prototype.play = function(){
+                  this.isPlaying = true;
+            };
+            Media.prototype.stop = function(){
+                  this.isPlaying = false;
+            };
+        </script>
+        
+        <script>
+            function Song(title, artist, duration){
+              this.artist = artist;
+              Media.call(this, title, duration);
+            }
+
+            Song.prototype = Object.create(Media.prototype);
+
+            /*<li class="current">pata chalega - Imran khan <span class="duration">5:06</span></li>*/
+            Song.prototype.toHtml = function(){
+              var htmlString = '<li ';
+                  if(this.isPlaying){
+                    htmlString += 'class="current"';
+                  }
+                  htmlString += '>';
+                  htmlString += this.title;
+                  htmlString += ' - ';
+                  htmlString += this.artist;
+                  htmlString += '<span class="duration">';
+                  htmlString += this.duration;
+                  htmlString += '</span></li>';
+                return htmlString;
+            };
+        </script>
+        <script>
+            function Movie(title, year, duration){
+              this.year = year;
+              Media.call(this, title, duration);
+            }
+
+            Movie.prototype = Object.create(Media.prototype);
+
+
+            /*<li class="current">Man of Steel - (2005) <span class="duration">5:06</span></li>*/
+            Movie.prototype.toHtml = function(){
+              var htmlString = '<li ';
+                  if(this.isPlaying){
+                    htmlString += 'class="current"';
+                  }
+                  htmlString += '>';
+                  htmlString += this.title;
+                  htmlString += ' - ( ';
+                  htmlString += this.year + ' )';
+                  htmlString += '<span class="duration">';
+                  htmlString += this.duration;
+                  htmlString += '</span></li>';
+                return htmlString;
+            };
+        </script>
+        <script>
+            var playList = new PlayLists();
+
+            var aeDilHiMushkil = new Song('ae dil hi mushkil', 'arjit singh', '4:54');
+             var pataChalega = new Song('pata chalega', 'imran khan', '3:25');
+            var theStarBoy = new Song('the star boy weeknd', 'the weeknd', '4:05');
+            var theManOfSteel = new Movie('the man of steel', '2005', '02:45:00')
+
+
+            playList.add(aeDilHiMushkil);
+            playList.add(pataChalega);
+            playList.add(theStarBoy);
+            playList.add(theManOfSteel);
+
+            var myListElement = document.getElementById("myPlayList");
+
+            playList.renderInElement(myListElement);
+
+
+
+
+            var play = document.getElementById("play");
+            var next = document.getElementById("next");
+            var stop = document.getElementById("stop");
+
+            play.onclick = function (){
+                playList.play();
+                playList.renderInElement(myListElement);
+            }
+            stop.onclick = function (){
+                playList.stop();
+                playList.renderInElement(myListElement);
+            }
+            next.onclick = function (){
+                playList.next();
+                playList.renderInElement(myListElement);
+            }
+        </script>
+  </body>
+</html>
